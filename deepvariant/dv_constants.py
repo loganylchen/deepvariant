@@ -104,6 +104,7 @@ CHANNELS = [
     'base_channels_alternate_allele_1',
     'base_channels_alternate_allele_2',
     'mean_coverage',
+    'read_end',
 ]
 
 ALT_ALIGNED_PILEUP_CHANNELS = [

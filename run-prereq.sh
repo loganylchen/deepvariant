@@ -154,7 +154,7 @@ pip3 install "${PIP_ARGS[@]}" 'scikit-learn==1.0.2'
 pip3 install "${PIP_ARGS[@]}" 'tensorflow-addons==0.21.0'
 # This is to avoid ERROR: No matching distribution found for opencv-python-headless==4.5.2.52.
 # TODO: Make this the same as ${DV_GCP_OPTIMIZED_TF_WHL_VERSION}" later
-pip3 install "${PIP_ARGS[@]}"  "tf-models-official==2.13.1"
+pip3 install "${PIP_ARGS[@]}" "setuptools==61.0.0"; pip3 install "${PIP_ARGS[@]}"  "tf-models-official==2.13.1"
 
 ################################################################################
 # TensorFlow
@@ -301,4 +301,5 @@ pip3 install "${PIP_ARGS[@]}"  "tf-models-official==2.11.6"
 # Just being safe, pin protobuf's version one more time.
 pip3 install "${PIP_ARGS[@]}" 'protobuf==3.13.0'
 
+pip3 install "${PIP_ARGS[@]}" "jax==0.4.35"
 note_build_stage "run-prereq.sh complete"

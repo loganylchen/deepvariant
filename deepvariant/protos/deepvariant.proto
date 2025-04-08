@@ -1189,4 +1189,6 @@ enum DeepVariantChannelEnum {
   CH_BLANK = 18;
   CH_INSERT_SIZE = 19;
   CH_MEAN_COVERAGE = 22;
+  // Self defined channel for DeepVariant RNA modification calling.
+  CH_READ_END = 1000;
 }
