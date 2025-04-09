@@ -106,6 +106,8 @@ export USE_DEFAULT_PYTHON_LIB_PATH=1
 # Presumably it won't be needed at some later point when bazel_skylib is
 # upgraded again.
 export DV_COPT_FLAGS="--copt=-march=corei7 --copt=-Wno-sign-compare --copt=-Wno-write-strings --experimental_build_setting_api --java_runtime_version=remotejdk_11"
+export DEBIAN_FRONTEND=noninteractive 
+export NEEDRESTART_MODE=a
 
 function note_build_stage {
   echo "========== [$(date)] Stage '${1}' starting"

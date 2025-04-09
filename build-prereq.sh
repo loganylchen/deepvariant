@@ -45,14 +45,35 @@ note_build_stage "Install the runtime packages"
 
 note_build_stage "Update package list"
 
-sudo -H apt-get -qq -y update
+apt-get -qq -y update
 
 note_build_stage "build-prereq.sh: Install development packages"
 
 # Need to wait for dpkg lock (see internal)
 wait_for_dpkg_lock
-sudo -H NEEDRESTART_MODE=a apt-get -qq -y install pkg-config zip g++ zlib1g-dev unzip curl git wget > /dev/null
-
+apt-get -qq -y install pkg-config zip g++ zlib1g-dev unzip curl git wget \
+    autoconf \
+    automake \
+    cmake \
+    gpg-agent \
+    g++ \
+    libtool \
+    make \
+    pkg-config \
+    software-properties-common \
+    wget \
+    unzip \
+    clang-11 \
+    libclang-11-dev \
+    libgoogle-glog-dev \
+    libgtest-dev \
+    libllvm11 \
+    llvm-11 \
+    llvm-11-dev \
+    llvm-11-linker-tools \
+    python3-dev \
+    zlib1g-dev \
+    libstdc++-12-dev
 
 ################################################################################
 # bazel
@@ -83,7 +104,7 @@ function ensure_wanted_bazel_version {
 ensure_wanted_bazel_version "${DV_BAZEL_VERSION}"
 
 # This is used for building examples_from_stream.so later.
-time sudo ./tools/build_absl.sh
+./tools/build_absl.sh
 
 ################################################################################
 # TensorFlow

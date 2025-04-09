@@ -69,7 +69,7 @@ fi
 
 note_build_stage "Update package list"
 
-sudo -H apt-get update "${APT_ARGS[@]}" > /dev/null
+apt-get update "${APT_ARGS[@]}" > /dev/null
 
 note_build_stage "run-prereq.sh: Install development packages"
 
@@ -77,26 +77,26 @@ note_build_stage "run-prereq.sh: Install development packages"
 wait_for_dpkg_lock
 
 # See https://askubuntu.com/questions/909277.
-sudo -H DEBIAN_FRONTEND=noninteractive apt-get install "${APT_ARGS[@]}" pkg-config zip zlib1g-dev unzip curl git wget > /dev/null
-sudo -H apt-get install "${APT_ARGS[@]}" python3-distutils > /dev/null
+apt-get install "${APT_ARGS[@]}" pkg-config zip zlib1g-dev unzip curl git wget > /dev/null
+apt-get install "${APT_ARGS[@]}" python3-distutils > /dev/null
 
 note_build_stage "Install python3 packaging infrastructure"
 
 # Avoid issue with pip's dependency resolver not accounting for all installed
 # packages.
-sudo -H apt-get install "${APT_ARGS[@]}" "python3-testresources"
+apt-get install "${APT_ARGS[@]}" "python3-testresources"
 
 # Fix this error:
 # "error: command 'x86_64-linux-gnu-gcc' failed: No such file or directory"
-sudo -H apt-get install "${APT_ARGS[@]}" "gcc"
+apt-get install "${APT_ARGS[@]}" "gcc"
 
 # If we install python3-pip directly, the pip3 version points to:
 #   pip 8.1.1 from /usr/lib/python3/dist-packages (python 3.5)
 # Use the following lines to ensure correct Python version.
-curl -o get-pip.py https://bootstrap.pypa.io/get-pip.py
-python3 get-pip.py --force-reinstall --user
-rm -f get-pip.py
-
+# curl -o get-pip.py https://bootstrap.pypa.io/get-pip.py
+# python3 get-pip.py --force-reinstall --user
+# rm -f get-pip.py
+apt install python3-pip
 echo "$(python3 --version)"
 
 export PATH="$HOME/.local/bin":$PATH
@@ -217,15 +217,15 @@ if [[ "${DV_GPU_BUILD}" = "1" ]]; then
       echo "Installing CUDA..."
       UBUNTU_VERSION="2204"
       curl -O https://developer.download.nvidia.com/compute/cuda/repos/ubuntu${UBUNTU_VERSION}/x86_64/cuda-ubuntu${UBUNTU_VERSION}.pin
-      sudo mv cuda-ubuntu${UBUNTU_VERSION}.pin /etc/apt/preferences.d/cuda-repository-pin-600
+      mv cuda-ubuntu${UBUNTU_VERSION}.pin /etc/apt/preferences.d/cuda-repository-pin-600
 
       curl https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/3bf863cc.pub | gpg --dearmor | sudo tee /usr/share/keyrings/nvidia-cuda-archive-keyring.gpg > /dev/null
       echo \
         "deb [signed-by=/usr/share/keyrings/nvidia-cuda-archive-keyring.gpg] https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/ /" | \
-        sudo tee /etc/apt/sources.list.d/cuda.list > /dev/null
-      sudo -H NEEDRESTART_MODE=a apt-get update "${APT_ARGS[@]}"
-      sudo -H DEBIAN_FRONTEND=noninteractive NEEDRESTART_MODE=a apt-get full-upgrade "${APT_ARGS[@]}"
-      sudo -H DEBIAN_FRONTEND=noninteractive NEEDRESTART_MODE=a apt-get install "${APT_ARGS[@]}" cuda-11-8
+        tee /etc/apt/sources.list.d/cuda.list > /dev/null
+      apt-get update "${APT_ARGS[@]}"
+      apt-get full-upgrade "${APT_ARGS[@]}"
+      apt-get install "${APT_ARGS[@]}" cuda-11-8
     fi
     echo "Checking for CUDNN..."
     if [[ ! -e /usr/local/cuda-11/include/cudnn.h ]]; then
@@ -233,13 +233,13 @@ if [[ "${DV_GPU_BUILD}" = "1" ]]; then
       CUDNN_TAR_FILE="cudnn-linux-x86_64-8.6.0.163_cuda11-archive.tar.xz"
       wget -q https://developer.download.nvidia.com/compute/redist/cudnn/v8.6.0/local_installers/11.8/${CUDNN_TAR_FILE}
       tar -xvf ${CUDNN_TAR_FILE}
-      sudo cp -P cudnn-linux-x86_64-8.6.0.163_cuda11-archive/include/cudnn.h /usr/local/cuda-11/include
-      sudo cp -P cudnn-linux-x86_64-8.6.0.163_cuda11-archive/lib/libcudnn* /usr/local/cuda-11/lib64/
-      sudo chmod a+r /usr/local/cuda-11/lib64/libcudnn*
-      sudo ldconfig
+      cp -P cudnn-linux-x86_64-8.6.0.163_cuda11-archive/include/cudnn.h /usr/local/cuda-11/include
+      cp -P cudnn-linux-x86_64-8.6.0.163_cuda11-archive/lib/libcudnn* /usr/local/cuda-11/lib64/
+      chmod a+r /usr/local/cuda-11/lib64/libcudnn*
+      ldconfig
     fi
     # Tensorflow says to do this.
-    sudo -H NEEDRESTART_MODE=a apt-get install "${APT_ARGS[@]}" libcupti-dev > /dev/null
+    apt-get install "${APT_ARGS[@]}" libcupti-dev > /dev/null
   fi
 
   # If we are doing a gpu-build, nvidia-smi should be install. Run it so we
@@ -263,17 +263,17 @@ if [[ "${DV_GPU_BUILD}" = "1" ]]; then
   TENSORRT_PATH=$(python3 -c 'import tensorrt; print(tensorrt.__path__[0])')
   # In v8.6.1, the libs got moved to tensorrt_libs:
   # https://docs.nvidia.com/deeplearning/tensorrt/release-notes/index.html#rel-8-6-1
-  sudo ln -sf "${TENSORRT_PATH}_libs/libnvinfer.so.8" "${TENSORRT_PATH}_libs/libnvinfer.so.7"
-  sudo ln -sf "${TENSORRT_PATH}_libs/libnvinfer_plugin.so.8" "${TENSORRT_PATH}_libs/libnvinfer_plugin.so.7"
+  ln -sf "${TENSORRT_PATH}_libs/libnvinfer.so.8" "${TENSORRT_PATH}_libs/libnvinfer.so.7"
+  ln -sf "${TENSORRT_PATH}_libs/libnvinfer_plugin.so.8" "${TENSORRT_PATH}_libs/libnvinfer_plugin.so.7"
   export LD_LIBRARY_PATH="${LD_LIBRARY_PATH-}:${TENSORRT_PATH}_libs"
   sudo ldconfig
   # Just in case this still doesn't work, we link them.
   # This is a workaround that we might want to get rid of, if we can make sure
   # setting LD_LIBRARY_PATH and `sudo ldconfig`` works.
   if [[ ! -e /usr/local/nvidia/lib ]]; then
-    sudo mkdir -p /usr/local/nvidia/lib
-    sudo ln -sf "${TENSORRT_PATH}_libs/libnvinfer.so.7" /usr/local/nvidia/lib/libnvinfer.so.7
-    sudo ln -sf "${TENSORRT_PATH}_libs/libnvinfer_plugin.so.7" /usr/local/nvidia/lib/libnvinfer_plugin.so.7
+    mkdir -p /usr/local/nvidia/lib
+    ln -sf "${TENSORRT_PATH}_libs/libnvinfer.so.7" /usr/local/nvidia/lib/libnvinfer.so.7
+    ln -sf "${TENSORRT_PATH}_libs/libnvinfer_plugin.so.7" /usr/local/nvidia/lib/libnvinfer_plugin.so.7
   fi
 fi
 
@@ -284,10 +284,10 @@ fi
 note_build_stage "Install other packages"
 
 # for htslib
-sudo -H NEEDRESTART_MODE=a apt-get install "${APT_ARGS[@]}" libssl-dev libcurl4-openssl-dev liblz-dev libbz2-dev liblzma-dev > /dev/null
+apt-get install "${APT_ARGS[@]}" libssl-dev libcurl4-openssl-dev liblz-dev libbz2-dev liblzma-dev > /dev/null
 
 # for the debruijn graph
-sudo -H NEEDRESTART_MODE=a apt-get install "${APT_ARGS[@]}" libboost-graph-dev > /dev/null
+apt-get install "${APT_ARGS[@]}" libboost-graph-dev > /dev/null
 
 # Pin tf-models-official back to 2.11.6 to be closer to
 # ${DV_GCP_OPTIMIZED_TF_WHL_VERSION} (which is 2.11.0).

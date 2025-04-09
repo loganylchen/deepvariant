@@ -121,7 +121,7 @@ g++ -std=c++14 -shared \
         --std=c++17 \
         -DEIGEN_MAX_ALIGN_BYTES=64 \
         -O2
-
+bazel clean --expunge
 # shellcheck disable=SC2086
 bazel build -c opt \
   //deepvariant:fast_pipeline
