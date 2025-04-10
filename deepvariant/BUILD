@@ -1089,6 +1089,7 @@ cc_library(
         "//deepvariant/channels:read_mapping_percent_channel",
         "//deepvariant/channels:read_supports_variant_channel",
         "//deepvariant/channels:strand_channel",
+        "//deepvariant/channels:read_end_channel",
         "//deepvariant/protos:deepvariant_cc_pb2",
         "//third_party/nucleus/protos:cigar_cc_pb2",
         "//third_party/nucleus/protos:position_cc_pb2",

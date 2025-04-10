@@ -51,6 +51,7 @@
 #include "deepvariant/channels/read_mapping_percent_channel.h"
 #include "deepvariant/channels/read_supports_variant_channel.h"
 #include "deepvariant/channels/strand_channel.h"
+#include "deepvariant/channels/read_end_channel.h"
 #include "deepvariant/protos/deepvariant.pb.h"
 #include "tensorflow/core/platform/test.h"
 #include "absl/container/flat_hash_set.h"
@@ -509,6 +510,7 @@ TEST_P(GetChannelDataTest, ReadData) {
       DeepVariantChannelEnum::CH_HOMOPOLYMER_WEIGHTED,
       DeepVariantChannelEnum::CH_BLANK,
       DeepVariantChannelEnum::CH_INSERT_SIZE,
+      DeepVariantChannelEnum::CH_READ_END,
   };
 
   Read ref_read = nucleus::MakeRead("chr1", 1, "GGGCGCTTTTAT", {"11M"});
@@ -657,7 +659,9 @@ TEST(GetRefChannelDataTest, ReadData) {
       DeepVariantChannelEnum::CH_IS_HOMOPOLYMER,
       DeepVariantChannelEnum::CH_HOMOPOLYMER_WEIGHTED,
       DeepVariantChannelEnum::CH_BLANK,
-      DeepVariantChannelEnum::CH_INSERT_SIZE};
+      DeepVariantChannelEnum::CH_INSERT_SIZE,
+      DeepVariantChannelEnum::CH_READ_END,
+    };
 
   Read ref_read = nucleus::MakeRead("chr1", 1, "GGGCGCTTTTAT", {"11M"});
   const int base_quality = 33;

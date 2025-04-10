@@ -58,6 +58,7 @@
 #include "deepvariant/channels/mapping_quality_channel.h"
 #include "deepvariant/channels/read_mapping_percent_channel.h"
 #include "deepvariant/channels/read_supports_variant_channel.h"
+#include "deepvariant/channels/read_end_channel.h"
 #include "deepvariant/channels/strand_channel.h"
 #include "deepvariant/protos/deepvariant.pb.h"
 #include "absl/container/flat_hash_set.h"
@@ -547,12 +548,11 @@ DeepVariantChannelEnum Channels::ChannelStrToEnum(const std::string& channel) {
     return DeepVariantChannelEnum::CH_UNSPECIFIED;
   if (channel == ch_base_channels_alternate_allele_2)
     return DeepVariantChannelEnum::CH_UNSPECIFIED;
-  if (channel == ch_mean_coverage) {
+  if (channel == ch_mean_coverage) 
     return DeepVariantChannelEnum::CH_MEAN_COVERAGE;
-  }
-  if (channel == ch_read_end) {
+  if (channel == ch_read_end) 
     return DeepVariantChannelEnum::CH_READ_END;
-  }
+  
   CHECK(false) << "Channel '" << channel << "' should have a corresponding "
                << "enum in DeepVariantChannelEnum.";
 }

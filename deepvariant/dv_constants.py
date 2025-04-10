@@ -151,6 +151,7 @@ CHANNEL_ENUM_TO_STRING = {
         'base_channels_alternate_allele_2'
     ),
     deepvariant_pb2.CH_MEAN_COVERAGE: 'mean_coverage',
+    deepvariant_pb2.CH_READ_END: 'read_end',
 }
 
 # Used only when phasing is on (phase_reads=true). It allows to set the

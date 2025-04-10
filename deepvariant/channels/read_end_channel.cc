@@ -30,7 +30,7 @@
  */
 
 #include "deepvariant/channels/read_end_channel.h"
-
+ 
 #include <cstdint>
 #include <cstdlib>
 #include <string>
@@ -46,9 +46,9 @@ namespace learning {
       const Read& read, const DeepVariantCall& dv_call,
       const std::vector<std::string>& alt_alleles,
       std::vector<unsigned char>& read_level_data) {
-    int distance = DistanceToReadEnd(read, dv_call);
+    const int distance = DistanceToReadEnd(read, dv_call);
     read_level_data = std::vector<unsigned char>(
-        1, ScaleColor(DistanceToReadEnd(read), kMaxReadEndDistance));
+        1, ScaleColor(distance, kMaxReadEndDistance));
   }
   void ReadEndChannel::FillRefData(const std::string& ref_bases,
                                           std::vector<unsigned char>& ref_data) {

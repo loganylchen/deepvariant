@@ -232,3 +232,17 @@ cc_library(
         "//third_party/nucleus/protos:variants_cc_pb2",
     ],
 )
+cc_library(
+    name = "read_end_channel",
+    srcs = ["read_end_channel.cc"],
+    hdrs = ["read_end_channel.h"],
+    deps = [
+        ":channel",
+        "//deepvariant/protos:deepvariant_cc_pb2",
+        "//third_party/nucleus/protos:cigar_cc_pb2",
+        "//third_party/nucleus/protos:position_cc_pb2",
+        "//third_party/nucleus/protos:reads_cc_pb2",
+        "//third_party/nucleus/protos:struct_cc_pb2",
+        "//third_party/nucleus/protos:variants_cc_pb2",
+    ],
+)

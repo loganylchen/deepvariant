@@ -71,6 +71,7 @@ class ReadEndChannel : public Channel {
   // normalizes a Read's `fragment_length` to a pixel value
   int normalizeFragmentLength(const Read& read);
   static const constexpr int kMaxReadEndDistance = 100;
+  std::uint8_t ScaleColor(int value, float max_val) const;
 };
 }  // namespace deepvariant
 }  // namespace genomics

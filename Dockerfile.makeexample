@@ -1,0 +1,61 @@
+FROM google/deepvariant:1.8.0 as builder
+WORKDIR /opt/deepvariant-make_examples
+ENV PATH="${HOME}/bin:${PATH}"
+ADD . /opt/deepvariant-make_examples/
+RUN ./build-prereq.sh && \
+    ./build_make_examples_release_binaries.sh
+
+
+FROM ubuntu:22.04
+ARG DV_GPU_BUILD
+ARG VERSION
+ARG PYTHON_VERSION
+ARG TF_ENABLE_ONEDNN_OPTS
+ENV DV_GPU_BUILD=${DV_GPU_BUILD}
+ENV VERSION ${VERSION}
+ENV PYTHON_VERSION ${PYTHON_VERSION}
+ENV TF_ENABLE_ONEDNN_OPTS ${TF_ENABLE_ONEDNN_OPTS}
+
+RUN echo "Acquire::http::proxy \"$http_proxy\";\n" \
+    "Acquire::https::proxy \"$https_proxy\";" > "/etc/apt/apt.conf"
+
+WORKDIR /opt/
+COPY --from=builder /opt/deepvariant-make_examples/bazel-bin/licenses.zip .
+
+WORKDIR /opt/deepvariant/bin/
+COPY --from=builder /opt/conda /opt/conda
+COPY --from=builder /opt/deepvariant-make_examples/run-prereq.sh .
+COPY --from=builder /opt/deepvariant-make_examples/settings.sh .
+COPY --from=builder /opt/deepvariant-make_examples/bazel-out/k8-opt/bin/deepvariant/make_examples.zip  .
+COPY --from=builder /opt/deepvariant-make_examples/bazel-out/k8-opt/bin/deepvariant/show_examples.zip  .
+
+RUN ./run-prereq.sh
+
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python${PYTHON_VERSION} 0 && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python${PYTHON_VERSION} 0
+
+# Create shell wrappers for python zip files for easier use.
+RUN \
+    BASH_HEADER='#!/bin/bash' && \
+    printf "%s\n%s\n" \
+    "${BASH_HEADER}" \
+    'python3 /opt/deepvariant/bin/make_examples.zip "$@"' > \
+    /opt/deepvariant/bin/make_examples && \
+    printf "%s\n%s\n" \
+    "${BASH_HEADER}" \
+    'python3 /opt/deepvariant/bin/show_examples.zip "$@"' > \
+    /opt/deepvariant/bin/show_examples && \
+    chmod +x /opt/deepvariant/bin/make_examples 
+
+ENV PATH="${PATH}":/opt/deepvariant/bin
+
+RUN apt-get -y update && \
+    apt-get install -y parallel python3-pip && \
+    PATH="${HOME}/.local/bin:$PATH" python3 -m pip install absl-py==0.13.0 && \
+    apt-get clean autoclean && \
+    apt-get autoremove -y --purge && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /opt/deepvariant
+
+CMD ["/opt/deepvariant/bin/make_examples", "--help"]
