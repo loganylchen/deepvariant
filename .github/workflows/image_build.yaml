@@ -32,11 +32,10 @@ jobs:
       - name: Create Docker daemon.json
         run: |
           sudo mkdir -p /mnt/docker
-          sudo cat << EOF > /etc/docker/daemon.json
-          {
-            "data-root": "/mnt/docker"
-          }
-          EOF
+          sudo chmod 777 /mnt/docker
+          sudo cat /etc/docker/daemon.json
+          sudo cp daemon.json /etc/docker/daemon.json
+          
       - name: Restart Docker service
         run: |
           sudo docker info
