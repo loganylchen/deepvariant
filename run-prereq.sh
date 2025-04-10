@@ -96,7 +96,7 @@ apt-get install "${APT_ARGS[@]}" "gcc"
 # curl -o get-pip.py https://bootstrap.pypa.io/get-pip.py
 # python3 get-pip.py --force-reinstall --user
 # rm -f get-pip.py
-apt install python3-pip
+apt install "${APT_ARGS[@]}" python3-pip
 echo "$(python3 --version)"
 
 export PATH="$HOME/.local/bin":$PATH
@@ -108,52 +108,84 @@ echo "$(pip3 --version)"
 
 note_build_stage "Install python3 packages"
 
+
+note_build_stage "contextlib2 installed"
 pip3 install "${PIP_ARGS[@]}" contextlib2
+note_build_stage "etils typing_extensions importlib_resources installed"
 pip3 install "${PIP_ARGS[@]}" etils typing_extensions importlib_resources
+note_build_stage "enum34==1.1.8 installed"
 pip3 install "${PIP_ARGS[@]}" 'enum34==1.1.8'
+note_build_stage "sortedcontainers==2.1.0 installed"
 pip3 install "${PIP_ARGS[@]}" 'sortedcontainers==2.1.0'
+note_build_stage "intervaltree==3.0.2 installed"
 pip3 install "${PIP_ARGS[@]}" 'intervaltree==3.0.2'
+note_build_stage "mock>=2.0.0 installed"
 pip3 install "${PIP_ARGS[@]}" 'mock>=2.0.0'
+note_build_stage "ml_collections installed"
 pip3 install "${PIP_ARGS[@]}" ml_collections
+note_build_stage "PyYAML installed"
 pip3 install "${PIP_ARGS[@]}" --ignore-installed PyYAML
+note_build_stage "clu==0.0.9 installed"
 pip3 install "${PIP_ARGS[@]}" 'clu==0.0.9'
+
 # Note that protobuf installed with pip needs to be 3.13 because of the pyclif
 # version we're using. This is currently inconsistent with C++ protobuf version
 # in WORKSPACE and protobuf.BUILD, but we can't update those, because those
 # files need to be consistent with what TensorFlow needs, which is currently
 # still 3.9.2.
 # Ideally we want to make these protobuf versions all match, eventually.
+note_build_stage "protobuf==3.13.0 installed"
 pip3 install "${PIP_ARGS[@]}" 'protobuf==3.13.0'
+note_build_stage "argparse==1.4.0 installed"
 pip3 install "${PIP_ARGS[@]}" 'argparse==1.4.0'
-
+note_build_stage "numpy==${DV_TF_NUMPY_VERSION} installed"
 pip3 install "${PIP_ARGS[@]}" "numpy==${DV_TF_NUMPY_VERSION}"
 
 # Reason:
 # ========== [Wed Dec 11 19:57:32 UTC 2019] Stage 'Install python3 packages' starting
 # ERROR: pyasn1-modules 0.2.7 has requirement pyasn1<0.5.0,>=0.4.6, but you'll have pyasn1 0.1.9 which is incompatible.
+note_build_stage "pyasn1<0.5.0,>=0.4.6 installed"
 pip3 install "${PIP_ARGS[@]}" 'pyasn1<0.5.0,>=0.4.6'
+note_build_stage "requests>=2.18 installed"
 pip3 install "${PIP_ARGS[@]}" 'requests>=2.18'
+note_build_stage "oauth2client>=4.0.0 installed"
 pip3 install "${PIP_ARGS[@]}" --ignore-installed 'oauth2client>=4.0.0'
+note_build_stage "crcmod>=1.7 installed"
 pip3 install "${PIP_ARGS[@]}" 'crcmod>=1.7'
+note_build_stage "six>=1.11.0 installed"
 pip3 install "${PIP_ARGS[@]}" 'six>=1.11.0'
+note_build_stage "joblib installed"
 pip3 install "${PIP_ARGS[@]}" joblib
+note_build_stage "psutil installed"
 pip3 install "${PIP_ARGS[@]}" psutil
+note_build_stage "google-api-python-client installed"
 pip3 install "${PIP_ARGS[@]}" --upgrade google-api-python-client
+note_build_stage "pandas==1.3.4 installed"
 pip3 install "${PIP_ARGS[@]}" 'pandas==1.3.4'
+
 # We manually install jsonschema here to pin it to v3.2.0, since
 # the latest v4.0.1 has issues with Altair v4.1.0.
 # See https://github.com/altair-viz/altair/issues/2496
 # If Altair version is updated below, the jsonschema version
 # should also be updated accordingly.
+note_build_stage "jsonschema==3.2.0 installed"
 pip3 install "${PIP_ARGS[@]}" 'jsonschema==3.2.0'
+note_build_stage "altair==4.1.0 installed"
 pip3 install "${PIP_ARGS[@]}" 'altair==4.1.0'
+note_build_stage "Pillow==9.5.0 installed"
 pip3 install "${PIP_ARGS[@]}" 'Pillow==9.5.0'
+note_build_stage "ipython==8.22.2 installed"
 pip3 install "${PIP_ARGS[@]}" 'ipython==8.22.2'
+note_build_stage "pysam==0.20.0 installed"
 pip3 install "${PIP_ARGS[@]}" 'pysam==0.20.0'
+note_build_stage "scikit-learn==1.0.2 installed"
 pip3 install "${PIP_ARGS[@]}" 'scikit-learn==1.0.2'
+note_build_stage "tensorflow-addons==0.21.0 installed"
 pip3 install "${PIP_ARGS[@]}" 'tensorflow-addons==0.21.0'
+
 # This is to avoid ERROR: No matching distribution found for opencv-python-headless==4.5.2.52.
 # TODO: Make this the same as ${DV_GCP_OPTIMIZED_TF_WHL_VERSION}" later
+note_build_stage "etils typing_extensions importlib_resources installed"
 pip3 install "${PIP_ARGS[@]}" "setuptools==61.0.0"; pip3 install "${PIP_ARGS[@]}"  "tf-models-official==2.13.1"
 
 ################################################################################
@@ -200,6 +232,7 @@ fi
 # ImportError: cannot import name 'soft_unicode' from 'markupsafe'.
 # So, forcing a downgrade. This isn't the best solution, but we need it to get
 # our tests pass.
+note_build_stage "etils typing_extensions importlib_resources installed"
 pip3 install "${PIP_ARGS[@]}" --upgrade 'markupsafe==2.0.1'
 
 ################################################################################
