@@ -31,8 +31,8 @@ jobs:
           df -h
       - name: Create Docker daemon.json
         run: |
-          mkdir -p /mnt/docker
-          cat << EOF > /etc/docker/daemon.json
+          sudo mkdir -p /mnt/docker
+          sudo cat << EOF > /etc/docker/daemon.json
           {
             "data-root": "/mnt/docker"
           }
