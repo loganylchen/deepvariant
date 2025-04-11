@@ -62,7 +62,7 @@ namespace learning {
       value = max_val;
     }
     return static_cast<int>(kMaxPixelValueAsFloat *
-                            (static_cast<float>(value) / max_val));
+                            ((max_val-static_cast<float>(value)) / max_val));
   }
   
   // Average Base Quality: Averages base quality over length of read.

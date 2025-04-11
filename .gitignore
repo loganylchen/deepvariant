@@ -10,3 +10,4 @@
 bazel-*
 
 **/.ipynb_checkpoints
+testdata/
