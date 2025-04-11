@@ -65,15 +65,23 @@ namespace learning {
                             ((max_val-static_cast<float>(value)) / max_val));
   }
   
-  // Average Base Quality: Averages base quality over length of read.
+ 
   int ReadEndChannel::DistanceToReadEnd(const Read& read, const DeepVariantCall& dv_call) {
     const int target_pos = dv_call.variant().start();
     const int read_start = read.alignment().position().position();
     const int read_length = read.aligned_sequence().size();
+    const bool is_reverse = read.alignment().position().reverse_strand();
+  
+    // For RNA-seq paired-end reads
+    if (read.has_next_mate_position()) {
+      const int mate_start = read.next_mate_position().position();
+      const bool is_mate_reverse = read.next_mate_position().reverse_strand();
+      const int read_5_prime_end = is_reverse ? (read_start + read_length - 1) : read_start;
+      return std::abs(target_pos - read_5_prime_end);
+    } else {
+        return std::min(std::abs(target_pos - read_start), std::abs(target_pos -  (read_start + read_length - 1)));
+    }
 
-    const int distance_to_start = std::abs(target_pos - read_start);
-    const int distance_to_end = std::abs(target_pos - (read_start + read_length));
-    return std::min(distance_to_start, distance_to_end);
   }
   }  // namespace deepvariant
   }  // namespace genomics
